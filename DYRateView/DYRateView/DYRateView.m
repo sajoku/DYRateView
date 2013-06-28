@@ -136,7 +136,6 @@ static NSString *DefaultEmptyStarImageFilename = @"StarEmpty.png";
 - (void)setRate:(CGFloat)rate {
     _rate = rate;
     [self setNeedsDisplay];
-    [self notifyDelegate];
 }
 
 - (void)setAlignment:(RateViewAlignment)alignment
@@ -190,11 +189,26 @@ static NSString *DefaultEmptyStarImageFilename = @"StarEmpty.png";
     [self handleTouchAtLocation:touchLocation];
 }
 
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [touches anyObject];
+    CGPoint touchLocation = [touch locationInView:self];
+    [self notifyDelegate];
+    [self notifyDidFinishDelegate];
+    //[self.delegate rateView:self didFinishRating:[NSNumber numberWithFloat:self.rate]];
+}
+
 - (void)notifyDelegate {
     if (self.delegate && [self.delegate respondsToSelector:@selector(rateView:changedToNewRate:)]) {
         [self.delegate performSelector:@selector(rateView:changedToNewRate:)
                             withObject:self withObject:[NSNumber numberWithFloat:self.rate]];
     }
+}
+
+- (void)notifyDidFinishDelegate {
+  if (self.delegate && [self.delegate respondsToSelector:@selector(rateView:didFinishRating:)]) {
+                          [self.delegate performSelector:@selector(rateView:didFinishRating:)
+                                              withObject:self withObject:[NSNumber numberWithFloat:self.rate]];
+  }
 }
 
 @end
