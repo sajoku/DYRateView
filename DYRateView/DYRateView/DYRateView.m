@@ -197,6 +197,14 @@ static NSString *DefaultEmptyStarImageFilename = @"StarEmpty.png";
     //[self.delegate rateView:self didFinishRating:[NSNumber numberWithFloat:self.rate]];
 }
 
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [touches anyObject];
+    CGPoint touchLocation = [touch locationInView:self];
+    [self notifyDelegate];
+    [self notifyDidFinishDelegate];
+    //[self.delegate rateView:self didFinishRating:[NSNumber numberWithFloat:self.rate]];
+}
+
 - (void)notifyDelegate {
     if (self.delegate && [self.delegate respondsToSelector:@selector(rateView:changedToNewRate:)]) {
         [self.delegate performSelector:@selector(rateView:changedToNewRate:)
